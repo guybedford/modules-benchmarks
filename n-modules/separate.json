@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "sampleSize": 5,
+  "benchmarks": [
+    {
+      "name": "chrome-50",
+      "url": "separate.html?n=50",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-100",
+      "url": "separate.html?n=100",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-250",
+      "url": "separate.html?n=250",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-500",
+      "url": "separate.html?n=500",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-1000",
+      "url": "separate.html?n=1000",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-1500",
+      "url": "separate.html?n=1500",
+      "browser": {
+        "name": "chrome"
+      }
+    },
+    {
+      "name": "chrome-2000",
+      "url": "separate.html?n=2000",
+      "browser": {
+        "name": "chrome"
+      }
+    }
+  ]
+}

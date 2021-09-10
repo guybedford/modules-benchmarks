@@ -4,7 +4,7 @@ const builds = [];
 
 for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 2500]) {
   builds.push({
-    input: 'preact',
+    input: 'app',
     treeshake: false,
     output: {
       file: `generated/bundle${n}.js`
@@ -12,14 +12,16 @@ for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 2500]) {
     plugins: [{
       resolveId: id => id,
       async load (id) {
-        if (id === 'preact') {
+        if (id === 'app') {
           let source = '';
-          for (let i = 0; i < n; i++)
-            source += `import "../node_modules/preact/dist/preact.module.js?i=${i}";\n`;
+          for (let i = 1; i <= n; i++)
+            source += `import "./generated/app${i}.js";\n`;
           return source;
         }
         if (id.indexOf('?') !== -1)
           id = id.slice(0, id.indexOf('?'));
+        if (id === 'lib/preact.js')
+          id = './generated/preact.js';
         return (await readFile(id)).toString();
       }
     }]

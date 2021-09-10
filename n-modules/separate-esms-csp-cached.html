@@ -1,0 +1,19 @@
+<!doctype html>
+<script type="importmap">
+{
+  "imports": {
+    "lib/": "https://localhost:8001/n-modules/generated/"
+  }
+}
+</script>
+<script type="module" src="https://localhost:8001/node_modules/es-module-shims/dist/es-module-shims.csp.js"></script>
+<script type="module">
+  import { start, stop } from '/bench.js';
+  const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+  start();
+  let promises = Array(n);
+  for (let i = 1; i <= n; i++)
+    promises.push(importShim(`lib/app${i}.js`));
+  await Promise.all(promises);
+  stop();
+</script>

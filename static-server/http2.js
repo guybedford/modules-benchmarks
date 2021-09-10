@@ -65,4 +65,5 @@ server.on('stream', (stream, headers) => {
   }
 });
 
+console.log('Listening on ' + (process.env.CACHE ? 8001 : 8000));
 server.listen(process.env.CACHE ? 8001 : 8000);

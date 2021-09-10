@@ -63,4 +63,5 @@ const server = createServer({
 
 server.on('error', err => console.error(err));
 
+console.log('Listening on ' + (process.env.CACHE ? 8001 : 8000));
 server.listen(process.env.CACHE ? 8081 : 8080);

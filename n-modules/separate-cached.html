@@ -13,6 +13,5 @@
   let promises = Array(n);
   for (let i = 1; i <= n; i++)
     promises.push(import(`lib/app${i}.js`));
-  await Promise.all(promises);
-  stop();
+  Promise.all(promises).then(stop);
 </script>

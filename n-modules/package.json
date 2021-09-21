@@ -1,16 +1,16 @@
 {
   "type": "module",
   "scripts": {
-    "build": "node generate-separate.js && node --max-old-space-size=16000 ../node_modules/rollup/dist/bin/rollup -c rollup.config.js",
+    "build": "node generate-separate.js && node generate-benchmarks.js && node --max-old-space-size=16000 ../node_modules/rollup/dist/bin/rollup -c rollup.config.js",
     "bench": "run-s bench:*",
     "#bench:bundle": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config bundle.json --csv-file-raw ../results/n-modules-bundle.csv",
-    "bench:bundle-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config bundle-cached.json --csv-file-raw ../results/n-modules-bundle-cached.csv",
+    "#bench:bundle-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config bundle-cached.json --csv-file-raw ../results/n-modules-bundle-cached.csv",
     "#bench:separate": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate.json --csv-file-raw ../results/n-modules-separate.csv",
     "#bench:separate-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-cached.json --csv-file-raw ../results/n-modules-separate-cached.csv",
-    "#bench:separate-esms": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms.json --csv-file-raw ../results/n-modules-separate-esms.csv",
-    "#bench:separate-esms-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-cached.json --csv-file-raw ../results/n-modules-separate-esms-cached.csv",
-    "#bench:separate-esms-csp": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-csp.json --csv-file-raw ../results/n-modules-separate-esms-csp.csv",
-    "#bench:separate-esms-csp-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-csp-cached.json --csv-file-raw ../results/n-modules-separate-esms-csp-cached.csv",
+    "bench:separate-esms": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms.json --csv-file-raw ../results/n-modules-separate-esms.csv",
+    "bench:separate-esms-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-cached.json --csv-file-raw ../results/n-modules-separate-esms-cached.csv",
+    "bench:separate-esms-csp": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-csp.json --csv-file-raw ../results/n-modules-separate-esms-csp.csv",
+    "bench:separate-esms-csp-cached": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-esms-csp-cached.json --csv-file-raw ../results/n-modules-separate-esms-csp-cached.csv",
     "#bench:separate-cdn": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-cdn.json --csv-file-raw ../results/n-modules-separate-cdn.csv",
     "#bench:separate-cdn-esms": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-cdn.json --csv-file-raw ../results/n-modules-separate-cdn-esms.csv",
     "#bench:separate-cdn-esms-csp": "node --max-old-space-size=16000 ../node_modules/tachometer/bin/tach --config separate-cdn.json --csv-file-raw ../results/n-modules-separate-cdn-esms-csp.csv"

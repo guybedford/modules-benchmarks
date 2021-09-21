@@ -1,3 +1,5 @@
 *.csv
 node_modules
 */generated/*
+*/separate-*.json
+*/bundle*.json

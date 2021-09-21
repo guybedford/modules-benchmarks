@@ -9,12 +9,8 @@ const names = [
   'separate-cached',
   'mapped',
   'mapped-cached',
-  'separate-esms',
-  'separate-esms-cached',
   'mapped-esms',
   'mapped-esms-cached',
-  'separate-esms-debug',
-  'separate-esms-debug-cached',
   'mapped-esms-debug',
   'mapped-esms-debug-cached'
 ];

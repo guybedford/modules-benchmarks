@@ -10,8 +10,23 @@ catch {}
 await writeFile('generated/preact.js', preact);
 
 for (let i = 1; i <= 2000; i++) {
-  await writeFile(`generated/app${i}.js`, `\
+  await writeFile(`generated/app.mapped${i}.js`, `\
 import { h, Component, render } from 'lib/preact.js?n=${i}';
+
+export class App extends Component {
+  render() {
+    return h('h1', null, 'Hello, world ${i}!');
+  }
+}
+
+const el = document.createElement('div');
+render(h(App), el);
+`);
+}
+
+for (let i = 1; i <= 2000; i++) {
+  await writeFile(`generated/app${i}.js`, `\
+import { h, Component, render } from './preact.js?n=${i}';
 
 export class App extends Component {
   render() {

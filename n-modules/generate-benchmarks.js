@@ -1,16 +1,22 @@
 import { writeFileSync } from 'fs';
 
-const browser = 'safari';
+const browser = process.env.BROWSER || 'chrome';
 
 const names = [
   'bundle',
   'bundle-cached',
   'separate',
   'separate-cached',
+  'mapped',
+  'mapped-cached',
   'separate-esms',
   'separate-esms-cached',
-  'separate-esms-csp',
-  'separate-esms-csp-cached'
+  'mapped-esms',
+  'mapped-esms-cached',
+  'separate-esms-debug',
+  'separate-esms-debug-cached',
+  'mapped-esms-debug',
+  'mapped-esms-debug-cached'
 ];
 
 const template = name => `

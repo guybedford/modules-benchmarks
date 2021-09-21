@@ -1,0 +1,3 @@
+[submodule "es-module-shims"]
+	path = es-module-shims
+	url = git@github.com:guybedford/es-module-shims

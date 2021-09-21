@@ -1,17 +1,10 @@
 <!doctype html>
-<script type="importmap">
-{
-  "imports": {
-    "lib/": "https://localhost:8001/n-modules/generated/"
-  }
-}
-</script>
 <script type="module">
   import { start, stop } from '/bench.js';
   const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
   start();
   let promises = Array(n);
   for (let i = 1; i <= n; i++)
-    promises.push(import(`lib/app${i}.js`));
+    promises.push(import(`https://localhost:8001/n-modules/generated/app${i}.js`));
   Promise.all(promises).then(stop);
 </script>

@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 
 const builds = [];
 
-for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 2500]) {
+for (let n of [50, 100, 250, 500, 1000, 1500, 2000]) {
   builds.push({
     input: 'app',
     treeshake: false,

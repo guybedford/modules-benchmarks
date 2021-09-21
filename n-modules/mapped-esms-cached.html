@@ -1,4 +1,11 @@
 <!doctype html>
+<script type="importmap">
+{
+  "imports": {
+    "lib/": "https://localhost:8001/n-modules/generated/"
+  }
+}
+</script>
 <script type="module" src="https://localhost:8001/es-module-shims/dist/es-module-shims.js"></script>
 <script type="module">
   import { start, stop } from '/bench.js';
@@ -6,6 +13,6 @@
   start();
   let promises = Array(n);
   for (let i = 1; i <= n; i++)
-    promises.push(importShim(`https://localhost:8001/n-modules/generated/app${i}.js`));
+    promises.push(importShim(`lib/app.mapped${i}.js`));
   Promise.all(promises).then(stop);
 </script>

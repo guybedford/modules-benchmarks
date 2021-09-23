@@ -1,31 +1,29 @@
 import { readFile } from 'fs/promises';
 
-const builds = [];
+export default {
+  input: 'app',
+  treeshake: false,
+  output: {
+    file: `generated/bundle.js`
+  },
+  plugins: [{
+    resolveId: id => id,
+    async load (id) {
+      if (id === 'app')
+        return `\
+import { h, Component, render } from 'preact';
 
-for (let n of [50, 100, 250, 500, 1000, 1500, 2000]) {
-  builds.push({
-    input: 'app',
-    treeshake: false,
-    output: {
-      file: `generated/bundle${n}.js`
-    },
-    plugins: [{
-      resolveId: id => id,
-      async load (id) {
-        if (id === 'app') {
-          let source = '';
-          for (let i = 1; i <= n; i++)
-            source += `import "./generated/app${i}.js";\n`;
-          return source;
-        }
-        if (id.indexOf('?') !== -1)
-          id = id.slice(0, id.indexOf('?'));
-        if (id === 'lib/preact.js' || id === './preact.js')
-          id = './generated/preact.js';
-        return (await readFile(id)).toString();
-      }
-    }]
-  });
+export class App extends Component {
+  render() {
+    return h('h1', null, 'Hello, world ##n##!');
+  }
 }
 
-export default builds;
+const el = document.createElement('div');
+render(h(App), el);
+`;
+      if (id === 'preact')
+        return (await readFile('node_modules/preact/dist/preact.module.js')).toString();
+    }
+  }]
+};

@@ -7,9 +7,72 @@ catch {}
 
 const browser = process.env.BROWSER || 'chrome';
 
-const nModules = [
+const bModules = [
   'bundle',
-  'bundle-cached',
+  'bundle-cached'
+];
+
+for (const name of bModules) {
+  await writeFile(`benchmarks/${name}.bench.json`, `
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "sampleSize": 5,
+  "benchmarks": [
+    {
+      "name": "${browser}-50",
+      "url": "benchmarks/${name}.html?n=50",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-100",
+      "url": "benchmarks/${name}.html?n=100",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-250",
+      "url": "benchmarks/${name}.html?n=250",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-500",
+      "url": "benchmarks/${name}.html?n=500",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-1000",
+      "url": "benchmarks/${name}.html?n=1000",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-1500",
+      "url": "benchmarks/${name}.html?n=1500",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-2000",
+      "url": "benchmarks/${name}.html?n=2000",
+      "browser": {
+        "name": "${browser}"
+      }
+    }
+  ]
+}
+`);
+}
+
+const nModules = [
   'parallel',
   'parallel-cached',
   'parallel-mapped',
@@ -71,6 +134,27 @@ for (const name of nModules) {
     {
       "name": "${browser}-2000",
       "url": "benchmarks/${name}.html?n=2000",
+      "browser": {
+        "name": "${browser}"
+      }
+    }
+    {
+      "name": "${browser}-5000",
+      "url": "benchmarks/${name}.html?n=5000",
+      "browser": {
+        "name": "${browser}"
+      }
+    }
+    {
+      "name": "${browser}-10000",
+      "url": "benchmarks/${name}.html?n=10000",
+      "browser": {
+        "name": "${browser}"
+      }
+    }
+    {
+      "name": "${browser}-20000",
+      "url": "benchmarks/${name}.html?n=20000",
       "browser": {
         "name": "${browser}"
       }
@@ -140,6 +224,34 @@ for (const name of depthModules) {
     {
       "name": "${browser}-64",
       "url": "benchmarks/${name}.html?d=64",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-128",
+      "url": "benchmarks/${name}.html?d=128",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-256",
+      "url": "benchmarks/${name}.html?d=256",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-512",
+      "url": "benchmarks/${name}.html?d=512",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${browser}-1024",
+      "url": "benchmarks/${name}.html?d=1024",
       "browser": {
         "name": "${browser}"
       }

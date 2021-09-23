@@ -25,5 +25,5 @@
   start();
   // start preloads
   document.head.appendChild(preloadFragment);
-  import(`https://localhost:8000/generated/app.waterfall${d}.mapped.js`).then(stop);
+  importShim(`https://localhost:8000/generated/app.waterfall${d}.mapped.js`).then(stop);
 </script>

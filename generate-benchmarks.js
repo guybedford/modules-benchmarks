@@ -177,7 +177,7 @@ for (const name of depthModules) {
   await writeFile(`benchmarks/${name}.bench.json`, `
 {
   "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
-  "sampleSize": 25,
+  "sampleSize": 10,
   "benchmarks": [
     {
       "name": "${browser}-1",

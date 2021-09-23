@@ -13,6 +13,10 @@ const staticFileCache = Object.create(null);
 
 const cacheControl = process.env.CACHE ? 'public, max-age=3600' : 'no-cache';
 
+const bandwidthLimit = process.env.BANDWIDTH && Number(process.env.BANDWIDTH) || 0;
+const latencyLimit = process.env.LATENCY && Number(process.env.LATENCY) || 0;
+const brotli = !!process.env.BROTLI;
+
 const POOL_MAX = 16;
 let streamCnt = 0;
 const poolQueue = [];

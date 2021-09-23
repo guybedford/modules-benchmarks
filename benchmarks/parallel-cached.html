@@ -1,10 +1,23 @@
 <!doctype html>
 <script type="module">
   import { start, stop } from '/bench.js';
+
   const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+
+  const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
+
+  iframe.srcdoc = `\
+<script type="module">
+  let promises = Array(${n});
+  for (let i = 1; i <= ${n}; i++)
+    promises.push(import(\`https://localhost:8001/generated/app\${i}.js\`));
+  Promise.all(promises).then(parent._done);
+<${''}/script>
+`;
+
+  const donePromise = new Promise(resolve => self._done = resolve);
+
   start();
-  let promises = Array(n);
-  for (let i = 1; i <= n; i++)
-    promises.push(import(`https://localhost:8001/generated/app${i}.js`));
-  Promise.all(promises).then(stop);
+  document.body.appendChild(iframe);
+  donePromise.then(stop);
 </script>

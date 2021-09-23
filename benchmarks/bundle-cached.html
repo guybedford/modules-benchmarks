@@ -1,7 +1,20 @@
 <!doctype html>
 <script type="module">
   import { start, stop } from '/bench.js';
+
   const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+
+  const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
+
+  iframe.srcdoc = `\
+<script type="module">
+  import('https://localhost:8001/generated/bundle${n}.js').then(parent._done);
+<${''}/script>
+`;
+
+  const donePromise = new Promise(resolve => self._done = resolve);
+
   start();
-  import(`https://localhost:8001/generated/bundle${n}.js`).then(stop);
+  document.body.appendChild(iframe);
+  donePromise.then(stop);
 </script>

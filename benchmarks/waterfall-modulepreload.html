@@ -1,21 +1,26 @@
 <!doctype html>
 <script type="module">
   import { start, stop } from '/bench.js';
+
   const { d = 8 } = Object.fromEntries(new URL(location.href).searchParams);
-  // prepare preloads for injection
-  const preloadFragment = document.createDocumentFragment();
-  preloadFragment.appendChild(Object.assign(document.createElement('link'), {
-    rel: 'modulepreload',
-    href: `https://localhost:8000/generated/app.waterfall.0.js`
-  }));
-  for (let i = 1; i <= d; i++) {
-    preloadFragment.appendChild(Object.assign(document.createElement('link'), {
-      rel: 'modulepreload',
-      href: `https://localhost:8000/generated/app.waterfall.${i}.js`
-    }));
-  }
+
+  const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
+
+  let preloads = '';
+  preloads += `<link rel="modulepreload" href="https://localhost:8000/generated/app.waterfall.0.js" />\n`;
+  for (let i = 1; i <= d; i++)
+    preloads += `<link rel="modulepreload" href="https://localhost:8000/generated/app.waterfall.${i}.js" />\n`;
+  iframe.srcdoc = `\
+${preloads}
+<script type="module">
+  import(\`https://localhost:8000/generated/app.waterfall${d}.js\`).then(parent._done);
+<${''}/script>
+`;
+
+  const donePromise = new Promise(resolve => self._done = resolve);
+
   start();
-  // start preloads
-  document.head.appendChild(preloadFragment);
-  import(`https://localhost:8000/generated/app.waterfall${d}.js`).then(stop);
+  document.body.appendChild(iframe);
+  donePromise.then(stop);
 </script>
+

@@ -1,6 +1,8 @@
 import { createSecureServer } from 'http2';
 import { readFileSync } from 'fs';
 import { lookup } from 'mime-types';
+import { brotliCompressSync, constants } from 'zlib';
+import { ThrottleGroup } from 'speed-limiter';
 
 const server = createSecureServer({
   key: readFileSync('key.pem'),
@@ -13,7 +15,7 @@ const staticFileCache = Object.create(null);
 
 const cacheControl = process.env.CACHE ? 'public, max-age=3600' : 'no-cache';
 
-const bandwidthLimit = process.env.BANDWIDTH && Number(process.env.BANDWIDTH) || 0;
+const throttleGroup = process.env.BANDWIDTH ? new ThrottleGroup({ rate: Number(process.env.BANDWIDTH) * 1000 }) : null;
 const latencyLimit = process.env.LATENCY && Number(process.env.LATENCY) || 0;
 const brotli = !!process.env.BROTLI;
 
@@ -26,13 +28,20 @@ function streamEnd () {
   if (streamCnt === 0) {
     while (streamCnt < POOL_MAX && poolQueue.length) {
       const { stream, source } = poolQueue.shift();
-      stream.end(source);
+      if (throttleGroup) {
+        const throttle = throttleGroup.throttle();
+        throttle.pipe(stream);
+        throttle.end(source);
+      }
+      else {
+        stream.end(source);
+      }
       streamCnt++;
     }
   }
 }
 
-server.on('stream', (stream, headers) => {
+server.on('stream', async (stream, headers) => {
   if (headers[':method'] !== 'GET')
     throw new Error('Expected GET');
 
@@ -53,16 +62,28 @@ server.on('stream', (stream, headers) => {
     }
     entry = staticFileCache[path] = {
       contentType: lookup(path),
-      source
+      source: brotli ? brotliCompressSync(source, {
+        [constants.BROTLI_PARAM_QUALITY]: 11,
+      }) : source
     };
   }
 
-  stream.respond({ ':status': 200, 'content-type': entry.contentType, 'cache-control': cacheControl, 'Access-Control-Allow-Origin': '*' });
+  if (latencyLimit)
+    await new Promise(resolve => setTimeout(resolve, latencyLimit));
+
+  stream.respond({ ':status': 200, 'content-type': entry.contentType, 'cache-control': cacheControl, 'Access-Control-Allow-Origin': '*', ...brotli ?  { 'content-encoding': 'br' } : {} });
 
   stream.on('close', streamEnd);
   if (streamCnt !== POOL_MAX) {
     streamCnt++;
-    stream.end(entry.source);
+    if (throttleGroup) {
+      const throttle = throttleGroup.throttle();
+      throttle.pipe(stream);
+      throttle.end(entry.source);
+    }
+    else {
+      stream.end(entry.source);
+    }
   }
   else {
     poolQueue.push({ stream, source: entry.source });

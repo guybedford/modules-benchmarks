@@ -1,7 +1,4 @@
-*.csv
 node_modules
-*/generated/*
-*/separate*.json
-*/mapped*.json
-*/bundle*.json
-results
+generated/*
+benchmarks/*.bench.json
+results/*

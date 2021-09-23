@@ -1,0 +1,29 @@
+<!doctype html>
+<script type="importmap">
+{
+  "imports": {
+    "lib/": "https://localhost:8000/generated/"
+  }
+}
+</script>
+<script type="module" src="https://localhost:8000/es-module-shims/dist/es-module-shims.js"></script>
+<script type="module">
+  import { start, stop } from '/bench.js';
+  const { d = 8 } = Object.fromEntries(new URL(location.href).searchParams);
+  // prepare preloads for injection
+  const preloadFragment = document.createDocumentFragment();
+  preloadFragment.appendChild(Object.assign(document.createElement('link'), {
+    rel: 'modulepreload',
+    href: `https://localhost:8000/generated/app.waterfall.0.js`
+  }));
+  for (let i = 1; i <= d; i++) {
+    preloadFragment.appendChild(Object.assign(document.createElement('link'), {
+      rel: 'modulepreload',
+      href: `https://localhost:8000/generated/app.waterfall.${i}.js`
+    }));
+  }
+  start();
+  // start preloads
+  document.head.appendChild(preloadFragment);
+  import(`https://localhost:8000/generated/app.waterfall${d}.mapped.js`).then(stop);
+</script>

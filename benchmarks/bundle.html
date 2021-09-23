@@ -3,5 +3,5 @@
   import { start, stop } from '/bench.js';
   const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
   start();
-  import(`https://localhost:8001/n-modules/generated/bundle${n}.js`).then(stop);
+  import(`https://localhost:8000/generated/bundle${n}.js`).then(stop);
 </script>

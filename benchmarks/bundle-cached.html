@@ -3,8 +3,5 @@
   import { start, stop } from '/bench.js';
   const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
   start();
-  let promises = Array(n);
-  for (let i = 1; i <= n; i++)
-    promises.push(import(`https://localhost:8001/n-modules/generated/app${i}.js`));
-  Promise.all(promises).then(stop);
+  import(`https://localhost:8001/generated/bundle${n}.js`).then(stop);
 </script>

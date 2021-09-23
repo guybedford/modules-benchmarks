@@ -20,7 +20,7 @@ for (let n of [50, 100, 250, 500, 1000, 1500, 2000]) {
         }
         if (id.indexOf('?') !== -1)
           id = id.slice(0, id.indexOf('?'));
-        if (id === 'lib/preact.js')
+        if (id === 'lib/preact.js' || id === './preact.js')
           id = './generated/preact.js';
         return (await readFile(id)).toString();
       }

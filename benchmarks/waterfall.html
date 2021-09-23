@@ -1,0 +1,7 @@
+<!doctype html>
+<script type="module">
+  import { start, stop } from '/bench.js';
+  const { d = 8 } = Object.fromEntries(new URL(location.href).searchParams);
+  start();
+  import(`https://localhost:8000/generated/app.waterfall${d}.js`).then(stop);
+</script>

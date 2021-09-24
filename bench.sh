@@ -15,7 +15,11 @@ cnt=0
 trap Exit SIGINT SIGTERM SIGTSTP
 
 for bench in $ARGS; do
-  echo "Running benchmark $bench ($cnt / $total)";
-  node --max-old-space-size=16000 ./node_modules/tachometer/bin/tach --config $bench --csv-file-raw results/$(basename $bench .bench.json).csv
+  if test -f "results/$(basename $bench .bench.json).csv"; then
+    echo "Skipping $bench"
+  else
+    echo "Running benchmark $bench ($cnt / $total)";
+    node --max-old-space-size=16000 ./node_modules/tachometer/bin/tach --config $bench --csv-file-raw results/$(basename $bench .bench.json).csv
+  fi
   ((cnt++))
 done

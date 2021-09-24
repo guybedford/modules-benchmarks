@@ -23,13 +23,12 @@ const ports = {
 
 for (const browser of ['safari', 'firefox', 'chrome']) {
   for (const type of Object.keys(ports)) {
-    for (const min of [true, false]) {
+    for (const min of [false]) {
       for (const name of [
         'bundle',
         'parallel',
         'parallel-mapped',
-        'parallel-mapped-esms',
-        'parallel-mapped-esms-debug',
+        'parallel-mapped-esms'
       ]) {
         const fullName = `${browser}.${type}${min ? '.min' : ''}.${name}`;
         await writeFile(`benchmarks/${fullName}.bench.json`, nTemplate(browser, type, min, name, fullName));
@@ -121,13 +120,6 @@ function nTemplate (browser, type, min, name, fullName) {
       "browser": {
         "name": "${browser}"
       }
-    },
-    {
-      "name": "${fullName}-20000",
-      "url": "cases/${name}.html?n=20000&port=${port}&min=${min}",
-      "browser": {
-        "name": "${browser}"
-      }
     }
   ]
 }
@@ -215,7 +207,7 @@ function dTemplate (browser, type, min, name, fullName) {
     },
     {
       "name": "${fullName}-1024",
-      "url": "cases/${name}.html?d=512&port=${port}&min=${min}",
+      "url": "cases/${name}.html?d=1024&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }

@@ -2,7 +2,7 @@
 <script type="module">
   import { start, stop } from '/bench.js';
 
-  const { d = 8, port = 8000 } = Object.fromEntries(new URL(location.href).searchParams);
+  const { d = 8, port = 8000, min } = Object.fromEntries(new URL(location.href).searchParams);
   const minStr = Boolean(Number(min)) ? '.min' : '';
 
   const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });

@@ -12,7 +12,7 @@ catch {}
 await writeFile('generated/preact.js', preact);
 
 const bundle = await readFile('generated/bundle.js');
-for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 5000, 10000, 20000]) {
+for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 5000, 10000]) {
   let source = '';
   for (let i = 1; i <= n; i++) {
     source += `export let _App${i};\n{\n${bundle.toString().replace('##n##', i).replace(/export \{ App \};\s*$/, `_App${i} = App;`)}}\n`;
@@ -20,7 +20,7 @@ for (let n of [50, 100, 250, 500, 1000, 1500, 2000, 5000, 10000, 20000]) {
   await writeFile(`generated/bundle${n}.js`, source);
 }
 
-for (let i = 1; i <= 20000; i++) {
+for (let i = 1; i <= 10000; i++) {
   await writeFile(`generated/app${i}.js`, `\
 import { h, Component, render } from './preact.js?n=${i}';
 
@@ -35,7 +35,7 @@ render(h(App), el);
 `);
 }
 
-for (let i = 1; i <= 20000; i++) {
+for (let i = 1; i <= 10000; i++) {
   await writeFile(`generated/app.mapped${i}.js`, `\
 import { h, Component, render } from 'lib/preact.js?n=${i}';
 

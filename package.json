@@ -15,7 +15,10 @@
     "serve:fastest-cached-brotli": "cross-env PORT=8005 BROTLI=1 CACHE=1 node static-server/http2.js",
     "serve:slow-brotli": "cross-env PORT=8006 BANDWIDTH=750 LATENCY=100 BROTLI=1 node static-server/http2.js",
     "serve:slow-cached-brotli": "cross-env PORT=8007 BANDWIDTH=750 LATENCY=100 BROTLI=1 CACHE=1 node static-server/http2.js",
-    "bench:run": "./run-benchmark.sh"
+    "bench:run": "bash bench.sh",
+    "bench:chrome": "run-p serve:* \"bench:run -- benchmarks/chrome*\"",
+    "bench:firefox": "run -p serve:* \"bench:run -- benchmarks/chrome*\"",
+    "bench:safari": "run -p serve:* \"bench:run -- benchmarks/chrome*\""
   },
   "dependencies": {
     "cross-env": "^7.0.3",

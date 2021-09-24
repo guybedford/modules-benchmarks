@@ -2,28 +2,31 @@
 <script type="module">
   import { start, stop } from '/bench.js';
 
-  const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+  const { n = 50, port = 8000, min } = Object.fromEntries(new URL(location.href).searchParams);
+  const minStr = Boolean(Number(min)) ? '.min' : '';
 
   const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
 
   const imports = {};
   for (let i = 1; i <= n; i++) {
-    imports[`lib/app.mapped${i}.js`] = `https://localhost:8001/generated/app.mapped${i}.js`;
-    imports[`lib/preact.js?n=${i}`] = `https://localhost:8001/generated/preact.js?n=${i}`;
+    imports[`lib/app.mapped${i}.js`] = `https://localhost:${port}/generated/app.mapped${i}${minStr}.js`;
+    imports[`lib/preact.js?n=${i}`] = `https://localhost:${port}/generated/preact${minStr}.js?n=${i}`;
   }
 
   iframe.srcdoc = `\
-<script type="importmap">
+<script type=importmap>
 {
   "imports": ${JSON.stringify(imports)}
 }
 <${''}/script>
+<script type="module" src="https://localhost:${port}/es-module-shims/dist/es-module-shims.js"><${''}/script>
 <script type="module">
   let promises = Array(${n});
   for (let i = 1; i <= ${n}; i++)
-    promises.push(import(\`lib/app.mapped\${i}.js\`));
+    promises.push(importShim(\`lib/app.mapped\${i}.js\`));
   Promise.all(promises).then(parent._done);
 <${''}/script>
+<body></body>
 `;
 
   const donePromise = new Promise(resolve => self._done = resolve);

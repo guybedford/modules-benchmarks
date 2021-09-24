@@ -2,13 +2,14 @@
 <script type="module">
   import { start, stop } from '/bench.js';
 
-  const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+  const { d = 8, port = 8000, min } = Object.fromEntries(new URL(location.href).searchParams);
+  const minStr = Boolean(Number(min)) ? '.min' : '';
 
   const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
 
   iframe.srcdoc = `\
 <script type="module">
-  import('https://localhost:8000/generated/bundle${n}.js').then(parent._done);
+  import(\`https://localhost:${port}/generated/app.waterfall${d}${minStr}.js\`).then(parent._done);
 <${''}/script>
 `;
 

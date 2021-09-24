@@ -1,263 +1,226 @@
 import { writeFile, mkdir } from 'fs/promises';
+import rimraf from 'rimraf';
 
-try {
-  await mkdir('results');
-}
+try { await mkdir('results') }
 catch {}
 
-const browser = process.env.BROWSER || 'chrome';
+try { rimraf.sync('benchmarks') }
+catch {}
 
-const bModules = [
-  'bundle',
-  'bundle-cached'
-];
+try { await mkdir('benchmarks') }
+catch {}
 
-for (const name of bModules) {
-  await writeFile(`benchmarks/${name}.bench.json`, `
+const ports = {
+  'fastest': 8000,
+  'fastest-cached': 8001,
+  'slow': 8002,
+  'slow-cached': 8003,
+  'fastest-brotli': 8004,
+  'fastest-cached-brotli': 8005,
+  'slow-brotli': 8006,
+  'slow-cached-brotli': 8007,
+};
+
+for (const browser of ['safari', 'firefox', 'chrome']) {
+  for (const type of Object.keys(ports)) {
+    for (const min of [true, false]) {
+      for (const name of [
+        'bundle',
+        'parallel',
+        'parallel-mapped',
+        'parallel-mapped-esms',
+        'parallel-mapped-esms-debug',
+      ]) {
+        const fullName = `${browser}.${type}${min ? '.min' : ''}.${name}`;
+        await writeFile(`benchmarks/${fullName}.bench.json`, nTemplate(browser, type, min, name, fullName));
+      }
+
+      for (const name of [
+        'waterfall',
+        'waterfall-mapped',
+        'waterfall-mapped-esms',
+        'waterfall-modulepreload',
+        'waterfall-mapped-modulepreload',
+        'waterfall-mapped-esms-modulepreload'
+      ]) {
+        const fullName = `${browser}.${type}${min ? '.min' : ''}.${name}`;
+        await writeFile(`benchmarks/${fullName}.bench.json`, dTemplate(browser, type, min, name, fullName));
+      }
+    }
+  }
+}
+
+function nTemplate (browser, type, min, name, fullName) {
+  const port = ports[type];
+  min = min ? '1' : '0';
+  return `\
 {
   "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
   "sampleSize": 5,
+  "timeout": 1,
   "benchmarks": [
     {
-      "name": "${browser}-50",
-      "url": "benchmarks/${name}.html?n=50",
+      "name": "${fullName}-50",
+      "url": "cases/${name}.html?n=50&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-100",
-      "url": "benchmarks/${name}.html?n=100",
+      "name": "${fullName}-100",
+      "url": "cases/${name}.html?n=100&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-250",
-      "url": "benchmarks/${name}.html?n=250",
+      "name": "${fullName}-250",
+      "url": "cases/${name}.html?n=250&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-500",
-      "url": "benchmarks/${name}.html?n=500",
+      "name": "${fullName}-500",
+      "url": "cases/${name}.html?n=500&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-1000",
-      "url": "benchmarks/${name}.html?n=1000",
+      "name": "${fullName}-1000",
+      "url": "cases/${name}.html?n=1000&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-1500",
-      "url": "benchmarks/${name}.html?n=1500",
+      "name": "${fullName}-1500",
+      "url": "cases/${name}.html?n=1500&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-2000",
-      "url": "benchmarks/${name}.html?n=2000",
+      "name": "${fullName}-2000",
+      "url": "cases/${name}.html?n=2000&port=${port}&min=${min}",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${fullName}-5000",
+      "url": "cases/${name}.html?n=5000&port=${port}&min=${min}",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${fullName}-10000",
+      "url": "cases/${name}.html?n=10000&port=${port}&min=${min}",
+      "browser": {
+        "name": "${browser}"
+      }
+    },
+    {
+      "name": "${fullName}-20000",
+      "url": "cases/${name}.html?n=20000&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     }
   ]
 }
-`);
+`;
 }
 
-const nModules = [
-  'parallel',
-  'parallel-cached',
-  'parallel-mapped',
-  'parallel-mapped-cached',
-  'parallel-mapped-esms',
-  'parallel-mapped-esms-cached',
-  'parallel-mapped-esms-debug',
-  'parallel-mapped-esms-debug-cached'
-];
-
-for (const name of nModules) {
-  await writeFile(`benchmarks/${name}.bench.json`, `
-{
-  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
-  "sampleSize": 5,
-  "benchmarks": [
-    {
-      "name": "${browser}-50",
-      "url": "benchmarks/${name}.html?n=50",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-100",
-      "url": "benchmarks/${name}.html?n=100",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-250",
-      "url": "benchmarks/${name}.html?n=250",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-500",
-      "url": "benchmarks/${name}.html?n=500",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-1000",
-      "url": "benchmarks/${name}.html?n=1000",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-1500",
-      "url": "benchmarks/${name}.html?n=1500",
-      "browser": {
-        "name": "${browser}"
-      }
-    },
-    {
-      "name": "${browser}-2000",
-      "url": "benchmarks/${name}.html?n=2000",
-      "browser": {
-        "name": "${browser}"
-      }
-    }
-    {
-      "name": "${browser}-5000",
-      "url": "benchmarks/${name}.html?n=5000",
-      "browser": {
-        "name": "${browser}"
-      }
-    }
-    {
-      "name": "${browser}-10000",
-      "url": "benchmarks/${name}.html?n=10000",
-      "browser": {
-        "name": "${browser}"
-      }
-    }
-    {
-      "name": "${browser}-20000",
-      "url": "benchmarks/${name}.html?n=20000",
-      "browser": {
-        "name": "${browser}"
-      }
-    }
-  ]
-}
-`);
-}
-
-const depthModules = [
-  'waterfall',
-  'waterfall-mapped',
-  'waterfall-mapped-esms',
-  'waterfall-modulepreload',
-  'waterfall-mapped-modulepreload',
-  'waterfall-mapped-esms-modulepreload'
-];
-
-for (const name of depthModules) {
-  await writeFile(`benchmarks/${name}.bench.json`, `
+function dTemplate (browser, type, min, name, fullName) {
+  const port = ports[type];
+  min = min ? '1' : '0';
+  return `\
 {
   "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
   "sampleSize": 10,
+  "timeout": 1,
   "benchmarks": [
     {
-      "name": "${browser}-1",
-      "url": "benchmarks/${name}.html?d=1",
+      "name": "${fullName}-1",
+      "url": "cases/${name}.html?d=1&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-2",
-      "url": "benchmarks/${name}.html?d=2",
+      "name": "${fullName}-2",
+      "url": "cases/${name}.html?d=2&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-4",
-      "url": "benchmarks/${name}.html?d=4",
+      "name": "${fullName}-4",
+      "url": "cases/${name}.html?d=4&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-8",
-      "url": "benchmarks/${name}.html?d=8",
+      "name": "${fullName}-8",
+      "url": "cases/${name}.html?d=8&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-16",
-      "url": "benchmarks/${name}.html?d=16",
+      "name": "${fullName}-16",
+      "url": "cases/${name}.html?d=16&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-32",
-      "url": "benchmarks/${name}.html?d=32",
+      "name": "${fullName}-32",
+      "url": "cases/${name}.html?d=32&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-64",
-      "url": "benchmarks/${name}.html?d=64",
+      "name": "${fullName}-64",
+      "url": "cases/${name}.html?d=64&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-128",
-      "url": "benchmarks/${name}.html?d=128",
+      "name": "${fullName}-128",
+      "url": "cases/${name}.html?d=128&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-256",
-      "url": "benchmarks/${name}.html?d=256",
+      "name": "${fullName}-256",
+      "url": "cases/${name}.html?d=256&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-512",
-      "url": "benchmarks/${name}.html?d=512",
+      "name": "${fullName}-512",
+      "url": "cases/${name}.html?d=512&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     },
     {
-      "name": "${browser}-1024",
-      "url": "benchmarks/${name}.html?d=1024",
+      "name": "${fullName}-1024",
+      "url": "cases/${name}.html?d=512&port=${port}&min=${min}",
       "browser": {
         "name": "${browser}"
       }
     }
   ]
 }
-`);
+`;
 }
-

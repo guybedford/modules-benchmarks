@@ -2,15 +2,23 @@
 <script type="module">
   import { start, stop } from '/bench.js';
 
-  const { n = 50 } = Object.fromEntries(new URL(location.href).searchParams);
+  const { n = 50, port = 8000, min } = Object.fromEntries(new URL(location.href).searchParams);
+  const minStr = Boolean(Number(min)) ? '.min' : '';
 
   const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
 
   iframe.srcdoc = `\
+<script type="importmap">
+{
+  "imports": {
+    "lib/": "https://localhost:${port}/generated/"
+  }
+}
+<${''}/script>
 <script type="module">
   let promises = Array(${n});
   for (let i = 1; i <= ${n}; i++)
-    promises.push(import(\`https://localhost:8001/generated/app\${i}.js\`));
+    promises.push(import(\`lib/app.mapped\${i}${minStr}.js\`));
   Promise.all(promises).then(parent._done);
 <${''}/script>
 `;

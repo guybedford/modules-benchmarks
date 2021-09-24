@@ -1,0 +1,27 @@
+<!doctype html>
+<script type="module">
+  import { start, stop } from '/bench.js';
+
+  const { d = 8, port = 8000, min } = Object.fromEntries(new URL(location.href).searchParams);
+  const minStr = Boolean(Number(min)) ? '.min' : '';
+
+  const iframe = Object.assign(document.createElement('iframe'), { style: 'display: none' });
+
+  let preloads = '';
+  preloads += `<link rel="modulepreload" href="https://localhost:${port}/generated/app.waterfall.0${minStr}.js" />\n`;
+  for (let i = 1; i <= d; i++)
+    preloads += `<link rel="modulepreload" href="https://localhost:${port}/generated/app.waterfall.${i}${minStr}.js" />\n`;
+  iframe.srcdoc = `\
+${preloads}
+<script type="module">
+  import(\`https://localhost:${port}/generated/app.waterfall${d}${minStr}.js\`).then(parent._done);
+<${''}/script>
+`;
+
+  const donePromise = new Promise(resolve => self._done = resolve);
+
+  start();
+  document.body.appendChild(iframe);
+  donePromise.then(stop);
+</script>
+

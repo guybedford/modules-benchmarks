@@ -15,6 +15,7 @@ const staticFileCache = Object.create(null);
 
 const cacheControl = process.env.CACHE ? 'public, max-age=3600' : 'no-cache';
 
+const port = process.env.PORT || 8000;
 const throttleGroup = process.env.BANDWIDTH ? new ThrottleGroup({ rate: Number(process.env.BANDWIDTH) * 1000 }) : null;
 const latencyLimit = process.env.LATENCY && Number(process.env.LATENCY) || 0;
 const brotli = !!process.env.BROTLI;
@@ -90,5 +91,5 @@ server.on('stream', async (stream, headers) => {
   }
 });
 
-console.log('Listening on ' + (process.env.CACHE ? 8001 : 8000));
-server.listen(process.env.CACHE ? 8001 : 8000);
+console.log('Listening on ' + port);
+server.listen(port);

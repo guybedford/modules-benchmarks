@@ -56,7 +56,8 @@ function nTemplate (browser, type, min, name, fullName) {
 {
   "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
   "sampleSize": 5,
-  "timeout": 1,
+  "timeout": 0,
+  "horizon": 0,
   "benchmarks": [
     {
       "name": "${fullName}-50",
@@ -133,7 +134,8 @@ function dTemplate (browser, type, min, name, fullName) {
 {
   "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
   "sampleSize": 10,
-  "timeout": 1,
+  "timeout": 0,
+  "horizon": 0,
   "benchmarks": [
     {
       "name": "${fullName}-1",

@@ -9,7 +9,7 @@ if [ "$#" -eq 0 ]; then
   ARGS="${ARG_LIST[@]}"
 fi
 
-total=$(echo $ARGS | wc -w);
+total=$(echo $ARGS | wc -w)
 cnt=0
 
 trap Exit SIGINT SIGTERM SIGTSTP
@@ -19,7 +19,7 @@ for bench in $ARGS; do
     echo "Skipping $bench"
   else
     echo "Running benchmark $bench ($cnt / $total)";
-    node --max-old-space-size=16000 ./node_modules/tachometer/bin/tach --config $bench --csv-file-raw results/$(basename $bench .bench.json).csv
+    node ./node_modules/tachometer/bin/tach --config $bench --csv-file-raw results/$(basename $bench .bench.json).csv
   fi
   ((cnt++))
 done
